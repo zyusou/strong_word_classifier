@@ -23,6 +23,7 @@ if __name__ == '__main__':
                 for char in line.strip():
                     if char in acccept_char:
                         write_word += char
+                write_word = write_word.strip()  # 空白文字のみある場合，削除する
 
-                if len(write_word) != 0:
+                if len(write_word) != 0 and write_word != "ー":
                     after_file.write(write_word + "\n")
