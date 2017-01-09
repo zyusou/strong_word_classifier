@@ -1,6 +1,7 @@
 import joblib
 from gensim import corpora, models, matutils
 import math
+import numpy
 
 num_dimension = 10
 
@@ -44,7 +45,11 @@ if __name__ == '__main__':
     for key in lsi_docs.keys():
         vec = vec2dense(lsi_docs[key], num_terms=num_dimension)
         norm = math.sqrt(sum(num ** 2 for num in vec))
-        unit_vector = [num / norm for num in vec]
+        if norm == 0.0:
+            unit_vector = [0.0 for num in vec]
+        else:
+            unit_vector = [num / norm for num in vec]
+
         unit_vectors[key] = unit_vector
 
     joblib.dump(unit_vectors, "train_data/unit_vectors.dict", compress=3)
