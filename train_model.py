@@ -46,44 +46,47 @@ if __name__ == '__main__':
     train_data, test_data, train_label, test_label = train_test_split(
         all_vector, all_labels)
 
-    param_grid = [
-        {"C": [1, 10, 50, 100, 500, 1000],
-         "kernel": ["rbf", "poly", "sigmoid"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
-        # {"C": [1, 10, 50, 100, 500, 1000],
-        #  "kernel": ["poly"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
-        # {"C": [1, 10, 50, 100, 500, 1000],
-        #  "kernel": ["p"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
-    ]
-    scores = ["f1"]
+    # param_grid = [
+    #     {"C": [1, 10, 50, 100, 500, 1000],
+    #      "kernel": ["rbf", "poly", "sigmoid"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
+    #     # {"C": [1, 10, 50, 100, 500, 1000],
+    #     #  "kernel": ["poly"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
+    #     # {"C": [1, 10, 50, 100, 500, 1000],
+    #     #  "kernel": ["p"], "gamma": ["auto", 1e-2, 1e-3, 1e-4]},
+    # ]
+    # scores = ["f1"]
+    #
+    # for score in scores:
+    #     print(" ".join(["\n", "*" * 10, score, "*" * 10, "\n", ]))
+    #
+    #     clf = grid_search.GridSearchCV(SVC(), param_grid=param_grid, cv=5, scoring=score, n_jobs=3)
+    #     clf.fit(train_data, train_label)
+    #
+    #     print("\n::bast param::\n")
+    #     print(clf.best_estimator_)
+    #
+    #     print("\n:mean score:\n")
+    #     for params, mean_score, all_scores in clf.grid_scores_:
+    #         print("{:.3f} (+/- {:.3f}) for {}".format(mean_score, all_scores.std() / 2, params))
+    #
+    #     print("\n::test result::\n")
+    #     y_true, y_pred = test_label, clf.predict(test_data)
+    #     print(classification_report(y_true, y_pred))
 
-    for score in scores:
-        print(" ".join(["\n", "*" * 10, score, "*" * 10, "\n", ]))
+    # classifier = SVC(C=500, cache_size=200, class_weight=None, coef0=0.0,
+    #                  decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
+    #                  max_iter=-1, probability=False, random_state=None, shrinking=True,
+    #                  tol=0.001, verbose=False)
 
-        clf = grid_search.GridSearchCV(SVC(), param_grid=param_grid, cv=5, scoring=score, n_jobs=3)
-        clf.fit(train_data, train_label)
+    classifier = LinearSVC(C=10, class_weight=None, dual=False, fit_intercept=True,
+                           intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+                           multi_class='ovr', penalty='l2', random_state=None, tol=0.0001,
+                           verbose=0)
+    classifier.fit(train_data, train_label)
 
-        print("\n::bast param::\n")
-        print(clf.best_estimator_)
+    predict_label = classifier.predict(test_data)
+    target_label = ["1_true", "2_false"]
 
-        print("\n:mean score:\n")
-        for params, mean_score, all_scores in clf.grid_scores_:
-            print("{:.3f} (+/- {:.3f}) for {}".format(mean_score, all_scores.std() / 2, params))
+    print(classification_report(test_label, predict_label, target_names=target_label))
 
-        print("\n::test result::\n")
-        y_true, y_pred = test_label, clf.predict(test_data)
-        print(classification_report(y_true, y_pred))
-
-        # classifier = LinearSVC(C=10, class_weight=None, dual=False, fit_intercept=True,
-        #                        intercept_scaling=1, loss='squared_hinge', max_iter=1000,
-        #                        multi_class='ovr', penalty='l2', random_state=None, tol=0.0001,
-        #                        verbose=0)
-        # classifier.fit(train_data, train_label)
-        #
-        # predict_label = classifier.predict(test_data)
-        # target_label = ["True", "False"]
-        #
-        # print(classification_report(test_label, predict_label, target_names=target_label))
-        #
-        # pprint(classifier.coef_)
-        # pprint(classifier.intercept_)
-        # pprint(classifier.intercept_scaling)
+    pprint(classifier.coef_)
