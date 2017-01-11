@@ -5,6 +5,7 @@ from sklearn.svm import LinearSVC, SVC
 from sklearn.metrics import classification_report
 from sklearn import grid_search
 from pprint import pprint
+from sklearn.externals import joblib
 
 """
 LinerSVC GridSearch 済み．
@@ -89,4 +90,4 @@ if __name__ == '__main__':
 
     print(classification_report(test_label, predict_label, target_names=target_label))
 
-    pprint(classifier.coef_)
+    joblib.dump(classifier, "strong_word_classifier.jbl")

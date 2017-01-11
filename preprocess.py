@@ -3,7 +3,7 @@ import os
 if __name__ == '__main__':
     before_corpus_dir = "pure_corpus"
     after_corpus_dir = "preprocessed_corpus"
-    acccept_char = """
+    accept_char = """
     アイウエオカキクケコサシスセソタチツテト
     ナニヌネノハヒフヘホマミムメモヤユヨ
     ラリルレロワヲンー
@@ -21,7 +21,7 @@ if __name__ == '__main__':
             for line in before_file:
                 write_word = ""
                 for char in line.strip():
-                    if char in acccept_char:
+                    if char in accept_char:
                         write_word += char
                 write_word = write_word.strip()  # 空白文字のみある場合，削除する
 
