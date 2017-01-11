@@ -1,6 +1,7 @@
 import joblib
 from gensim import corpora, models, matutils
 import math
+from tqdm import tqdm
 from pprint import pprint
 import json
 
@@ -41,9 +42,11 @@ if __name__ == '__main__':
                                 id2word=dct,
                                 num_topics=num_dimension)
 
+    lsi_model.save("lsi_model.mod")
+
     # pprint(lsi_model.show_topics())
-    topic_weight_list = [[lsi_model.show_topic(topicno=topicno, topn=100)]
-                         for topicno in range(num_dimension)]
+    # topic_weight_list = [[lsi_model.show_topic(topicno=topicno, topn=100)]
+    #                      for topicno in range(num_dimension)]
 
     # C#で使えるようにするためにjsonでdump
     # for i, topic in enumerate(topic_weight_list):
@@ -56,15 +59,14 @@ if __name__ == '__main__':
     #             weight_dict[str(tup[0])] = tup[1]
     #         json.dump(weight_dict, json_file, ensure_ascii=False)
 
-    # 学習させる時はコメントアウト部を使う．
-
     for key in bow_docs.keys():
         vec = bow_docs[key]
         lsi_vec = lsi_model[vec]
         lsi_docs[key] = lsi_vec
 
     unit_vectors = {}
-    for key in lsi_docs.keys():
+    for key in tqdm(lsi_docs.keys(), total=len(lsi_docs.keys())):
+        # num_termsの挙動が良く分からん……．LSI後の次元数(num_dimention)で正しいみたい．
         vec = vec2dense(lsi_docs[key], num_terms=num_dimension)
         norm = math.sqrt(sum(num ** 2 for num in vec))
         if norm == 0.0:
